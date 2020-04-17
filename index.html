@@ -78,7 +78,6 @@
     }
     const keys = Array.from(document.querySelectorAll('.key'));
     keys.forEach(key => {
-      console.log({ key })
       key.addEventListener('transitionend', removeTransition);
       key.addEventListener('click', handleAction);
     });
