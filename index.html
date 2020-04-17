@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zoom soundboard!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="keys">
+    <div data-key="65" class="key">
+      <kbd>👴(A)</kbd>
+      <span class="sound">dad joke</span>
+    </div>
+    <div data-key="83" class="key">
+      <kbd>🙌(S)</kbd>
+      <span class="sound">small cheer</span>
+    </div>
+    <div data-key="68" class="key">
+      <kbd>💪🙌(D)</kbd>
+      <span class="sound">big cheer</span>
+    </div>
+    <div data-key="70" class="key">
+      <kbd>🤦‍♀️(F)</kbd>
+      <span class="sound">fail</span>
+    </div>
+    <div data-key="71" class="key">
+      <kbd>🤣(G)</kbd>
+      <span class="sound">laugh</span>
+    </div>
+    <div data-key="72" class="key">
+      <kbd>🦗🦗(H)</kbd>
+      <span class="sound">crickets</span>
+    </div>
+    <div data-key="74" class="key">
+      <kbd>🔥(J)</kbd>
+      <span class="sound">this is fine</span>
+    </div>
+  </div>
+
+  <audio data-key="65" src="sounds/ba-dum-tsss.mp3"></audio>
+  <audio data-key="83" src="sounds/cheers-small.mp3"></audio>
+  <audio data-key="68" src="sounds/cheers-big.mp3"></audio>
+  <audio data-key="70" src="sounds/sad-trombone.mp3"></audio>
+  <audio data-key="71" src="sounds/laughs.mp3"></audio>
+  <audio data-key="72" src="sounds/crickets.mp3"></audio>
+  <audio data-key="74" src="sounds/this-is-fine.mp3"></audio>
+  <script>
+    function getElements(keyCode) {
+      const key = document.querySelector(`div[data-key="${keyCode}"]`);
+      const audio = document.querySelector(`audio[data-key="${keyCode}"]`);
+      return { key, audio }
+    }
+    function playSound(key, audio) {
+      key.classList.add('playing');
+      audio.currentTime = 0;
+      audio.play();
+    }
+    function removeTransition(e) {
+      if (e.propertyName !== 'transform') return;
+      e.target.classList.remove('playing');
+    }
+    function handleAction(e) {
+      if (e.type === "keydown") {
+        const { key, audio } = getElements(e.keyCode)
+        if (!audio) return;
+        playSound(key, audio)
+      }
+      if (e.type === 'click') {
+        // Get keycode from parentNode if the <kbd> is clicked...
+        const keyCode = e.target.getAttribute('data-key') || e.target.parentNode.getAttribute('data-key')
+        const { key, audio } = getElements(keyCode)
+        playSound(key, audio)
+      }
+    }
+    const keys = Array.from(document.querySelectorAll('.key'));
+    keys.forEach(key => {
+      console.log({ key })
+      key.addEventListener('transitionend', removeTransition);
+      key.addEventListener('click', handleAction);
+    });
+    window.addEventListener('keydown', handleAction);
+  </script>
+</body>
+
+</html>
